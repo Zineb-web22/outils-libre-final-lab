@@ -1,0 +1,11 @@
+.gradle/
+build/
+*.class
+.idea/
+*.iml
+*.iws
+out/
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
