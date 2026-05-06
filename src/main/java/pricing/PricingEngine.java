@@ -1,43 +1,36 @@
 package pricing;
 
+import pricing.model.CustomerType;
+import pricing.model.PricingResult;
+import pricing.service.DiscountService;
+import pricing.service.TaxService;
+
 import java.util.List;
 
-/**
- * BAD DESIGN: One class, one method, multiple responsibilities, 
- * hardcoded values, and poor readability.
- */
 public class PricingEngine {
-    
-    public double calculatePrice(List<Double> prices, List<Integer> quantities, String customerType, String discountCode) {
+    private final DiscountService discountService;
+    private final TaxService taxService;
+
+    public PricingEngine() {
+        this.discountService = new DiscountService();
+        this.taxService = new TaxService();
+    }
+
+    public PricingResult calculate(List<Double> prices, List<Integer> quantities, CustomerType customerType, String discountCode) {
+        double subtotal = calculateSubtotal(prices, quantities);
+        double discountAmount = discountService.calculateDiscount(subtotal, customerType, discountCode);
+        double taxableAmount = subtotal - discountAmount;
+        double tax = taxService.calculateTax(taxableAmount);
+        double finalPrice = taxableAmount + tax;
+
+        return new PricingResult(subtotal, discountAmount, tax, finalPrice);
+    }
+
+    private double calculateSubtotal(List<Double> prices, List<Integer> quantities) {
         double subtotal = 0;
         for (int i = 0; i < prices.size(); i++) {
             subtotal += prices.get(i) * quantities.get(i);
         }
-
-        double discount = 0;
-        if (customerType.equals("VIP")) {
-            discount = subtotal * 0.15;
-        } else if (customerType.equals("REGULAR")) {
-            if (subtotal > 100) {
-                discount = subtotal * 0.05;
-            }
-        }
-
-        if (discountCode != null && discountCode.equals("SAVE10")) {
-            discount += 10;
-        } else if (discountCode != null && discountCode.equals("SAVE20")) {
-            discount += 20;
-        }
-
-        double taxableAmount = subtotal - discount;
-        double tax = taxableAmount * 0.20;
-        double finalPrice = taxableAmount + tax;
-
-        System.out.println("Subtotal: " + subtotal);
-        System.out.println("Discount: " + discount);
-        System.out.println("Tax: " + tax);
-        System.out.println("Final Price: " + finalPrice);
-
-        return finalPrice;
+        return subtotal;
     }
 }
