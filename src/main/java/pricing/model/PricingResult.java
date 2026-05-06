@@ -20,7 +20,7 @@ public class PricingResult {
 
     @Override
     public String toString() {
-        return String.format("Subtotal: %.2f, Discount: %.2f, Tax: %.2f, Final Price: %.2f", 
+        return String.format(java.util.Locale.US, "Subtotal: %.2f, Discount: %.2f, Tax: %.2f, Final Price: %.2f", 
             subtotal, discountAmount, tax, finalPrice);
     }
 }

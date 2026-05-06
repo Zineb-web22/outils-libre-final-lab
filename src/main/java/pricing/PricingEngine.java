@@ -33,4 +33,29 @@ public class PricingEngine {
         }
         return subtotal;
     }
+
+    public static void main(String[] args) {
+        if (args.length < 4) {
+            System.out.println("Usage: PricingEngine <prices> <quantities> <customerType> <discountCode>");
+            return;
+        }
+
+        String[] pricesStr = args[0].split(",");
+        String[] quantitiesStr = args[1].split(",");
+        String customerTypeStr = args[2];
+        String discountCode = args[3].equals("null") ? null : args[3];
+
+        java.util.ArrayList<Double> prices = new java.util.ArrayList<>();
+        for (String p : pricesStr) prices.add(Double.parseDouble(p));
+
+        java.util.ArrayList<Integer> quantities = new java.util.ArrayList<>();
+        for (String q : quantitiesStr) quantities.add(Integer.parseInt(q));
+
+        CustomerType customerType = CustomerType.valueOf(customerTypeStr);
+
+        PricingEngine engine = new PricingEngine();
+        PricingResult result = engine.calculate(prices, quantities, customerType, discountCode);
+
+        System.out.println(result);
+    }
 }
